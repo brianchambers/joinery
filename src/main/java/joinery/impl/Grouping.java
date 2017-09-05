@@ -126,7 +126,7 @@ implements Iterable<Map.Entry<Object, SparseBitSet>> {
                 if (groups.isEmpty()) {
                     try {
                         if (function instanceof Aggregate) {
-                            column.add((V)Aggregate.class.cast(function).apply(df.col(c)));
+                            column.add((V)Aggregate.class.cast(function).apply(df.col(c), c));
                         } else {
                             for (int r = 0; r < df.length(); r++) {
                                 column.add((V)Function.class.cast(function).apply(df.get(r, c)));
@@ -146,7 +146,7 @@ implements Iterable<Map.Entry<Object, SparseBitSet>> {
                                 for (int r = rows.nextSetBit(0); r >= 0; r = rows.nextSetBit(r + 1)) {
                                     values.add(df.get(r, c));
                                 }
-                                column.add((V)Aggregate.class.cast(function).apply(values));
+                                column.add((V)Aggregate.class.cast(function).apply(values, c));
                             } else {
                                 for (int r = rows.nextSetBit(0); r >= 0; r = rows.nextSetBit(r + 1)) {
                                     column.add((V)Function.class.cast(function).apply(df.get(r, c)));

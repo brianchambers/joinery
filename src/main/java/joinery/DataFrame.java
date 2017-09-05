@@ -2206,7 +2206,9 @@ implements Iterable<List<V>> {
      * @see DataFrame#aggregate(Aggregate)
      */
     public interface Aggregate<I, O>
-    extends Function<List<I>, O> { }
+    extends Function<List<I>, O> {
+        O apply(List<I> values, int colIndex);
+    }
 
     /**
      * An interface used to filter a {@linkplain DataFrame data frame}.

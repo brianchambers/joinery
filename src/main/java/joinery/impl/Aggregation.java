@@ -41,6 +41,11 @@ public class Aggregation {
         public Number apply(final List<V> values) {
             return new Integer(values.size());
         }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
+        }
     }
 
     public static class Unique<V>
@@ -52,6 +57,11 @@ public class Aggregation {
                 throw new IllegalArgumentException("values not unique: " + unique);
             }
             return values.get(0);
+        }
+
+        @Override
+        public V apply(List<V> values, int colIndex) {
+            return this.apply(values);
         }
     }
 
@@ -81,6 +91,11 @@ public class Aggregation {
                 }
             }
             return sb.toString();
+        }
+
+        @Override
+        public String apply(List<V> values, int colIndex) {
+            return this.apply(values);
         }
     }
 
@@ -112,12 +127,22 @@ public class Aggregation {
         public Sum() {
             super(new org.apache.commons.math3.stat.descriptive.summary.Sum());
         }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
+        }
     }
 
     public static class Product<V>
     extends AbstractStorelessStatistic<V> {
         public Product() {
             super(new org.apache.commons.math3.stat.descriptive.summary.Product());
+        }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
         }
     }
 
@@ -126,12 +151,22 @@ public class Aggregation {
         public Mean() {
             super(new org.apache.commons.math3.stat.descriptive.moment.Mean());
         }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
+        }
     }
 
     public static class StdDev<V>
     extends AbstractStorelessStatistic<V> {
         public StdDev() {
             super(new org.apache.commons.math3.stat.descriptive.moment.StandardDeviation());
+        }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
         }
     }
 
@@ -140,12 +175,22 @@ public class Aggregation {
         public Variance() {
             super(new org.apache.commons.math3.stat.descriptive.moment.Variance());
         }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
+        }
     }
 
     public static class Skew<V>
     extends AbstractStorelessStatistic<V> {
         public Skew() {
             super(new org.apache.commons.math3.stat.descriptive.moment.Skewness());
+        }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
         }
     }
 
@@ -154,6 +199,11 @@ public class Aggregation {
         public Kurtosis() {
             super(new org.apache.commons.math3.stat.descriptive.moment.Kurtosis());
         }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
+        }
     }
 
     public static class Min<V>
@@ -161,12 +211,22 @@ public class Aggregation {
         public Min() {
             super(new org.apache.commons.math3.stat.descriptive.rank.Min());
         }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
+        }
     }
 
     public static class Max<V>
     extends AbstractStorelessStatistic<V> {
         public Max() {
             super(new org.apache.commons.math3.stat.descriptive.rank.Max());
+        }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
         }
     }
 
@@ -197,12 +257,22 @@ public class Aggregation {
         public Median() {
             super(new org.apache.commons.math3.stat.descriptive.rank.Median());
         }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
+        }
     }
 
     public static class Percentile<V>
     extends AbstractStatistic<V> {
         public Percentile(final double quantile) {
             super(new org.apache.commons.math3.stat.descriptive.rank.Percentile(quantile));
+        }
+
+        @Override
+        public Number apply(List<V> values, int colIndex) {
+            return this.apply(values);
         }
     }
 
@@ -222,6 +292,11 @@ public class Aggregation {
                 }
             }
             return stat.getSummary();
+        }
+
+        @Override
+        public StatisticalSummary apply(List<V> values, int colIndex) {
+            return this.apply(values);
         }
     }
 
