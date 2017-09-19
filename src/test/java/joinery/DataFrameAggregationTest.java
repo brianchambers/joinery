@@ -20,9 +20,12 @@ package joinery;
 
 import static org.junit.Assert.assertArrayEquals;
 
+import joinery.impl.Aggregation;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.*;
 
 public class DataFrameAggregationTest {
     DataFrame<Object> df;
@@ -227,5 +230,15 @@ public class DataFrameAggregationTest {
         df.set(0, 2, null);
         df.set(1, 3, null);
         df.median();
+    }
+
+    @Test
+    public void testColumnSpecificAggregations() {
+        Map<Object, DataFrame.Aggregate> aggregationMap = new HashMap<>();
+        aggregationMap.put("c", new Aggregation.Sum());
+        aggregationMap.put("d", new Aggregation.Mean<>());
+        assertArrayEquals(
+                new Object[] { "one", "two", "three", 30.0, 70.0, 180.0, 15.0, 35.0, 60.0 },
+                df.groupBy("b").applyColumnSpecificAggregations(aggregationMap).toArray());
     }
 }

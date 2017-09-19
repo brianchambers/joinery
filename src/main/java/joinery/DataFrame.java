@@ -24,18 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.codahale.metrics.annotation.Timed;
 
@@ -1551,6 +1540,10 @@ implements Iterable<List<V>> {
         return groups.apply(this, function);
     }
 
+    public <U> DataFrame<V> applyColumnSpecificAggregations(final Map<Object, Aggregate> aggregateMap) {
+        return groups.apply(this, aggregateMap);
+    }
+
     @Timed
     public DataFrame<V> count() {
         return groups.apply(this, new Aggregation.Count<V>());
@@ -2317,5 +2310,12 @@ implements Iterable<List<V>> {
                 DataFrame.class.getCanonicalName()
             );
         System.exit(255);
+    }
+
+    public interface AggregateableColumn {
+        Aggregation aggregation();
+        Object name();
+        void aggregation(Aggregation aggregation);
+        void name(Object name);
     }
 }
