@@ -18,6 +18,7 @@
 
 package joinery.impl;
 
+import java.security.acl.Group;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,11 +80,15 @@ public class Grouping
         );
     }
 
-    private Map<Object, Aggregate> aggregateMap = new HashMap<>();
+    private Map<Object, Aggregate> aggregateBindings = new HashMap<>();
 
-    public Grouping aggregations(Map<Object, Aggregate> aggregateMap) {
-        this.aggregateMap = aggregateMap;
+    public Grouping bindAggregate(Object col, Aggregate aggregate) {
+        aggregateBindings.put(col, aggregate);
         return this;
+    }
+
+    public <V> DataFrame<V> apply(final DataFrame<V> df) {
+        return this.apply(df, this.aggregateBindings);
     }
 
     public <V> DataFrame<V> apply(final DataFrame<V> df, final Map<Object, Aggregate> aggregateMap) {

@@ -1540,8 +1540,16 @@ implements Iterable<List<V>> {
         return groups.apply(this, function);
     }
 
-    public <U> DataFrame<V> applyColumnSpecificAggregations(final Map<Object, Aggregate> aggregateMap) {
-        return groups.apply(this, aggregateMap);
+    public <U> DataFrame<V> bindAggregate(Object column, Aggregate aggregate) {
+        if (columns.names().contains(column)) {
+            groups.bindAggregate(column, aggregate);
+        }
+
+        return this;
+    }
+
+    public <U> DataFrame<V> applyColumnSpecificAggregations() {
+        return groups.apply(this);
     }
 
     @Timed

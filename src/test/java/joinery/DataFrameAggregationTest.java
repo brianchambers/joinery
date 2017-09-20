@@ -234,11 +234,12 @@ public class DataFrameAggregationTest {
 
     @Test
     public void testColumnSpecificAggregations() {
-        Map<Object, DataFrame.Aggregate> aggregationMap = new HashMap<>();
-        aggregationMap.put("c", new Aggregation.Sum());
-        aggregationMap.put("d", new Aggregation.Mean<>());
         assertArrayEquals(
                 new Object[] { "one", "two", "three", 30.0, 70.0, 180.0, 15.0, 35.0, 60.0 },
-                df.groupBy("b").applyColumnSpecificAggregations(aggregationMap).toArray());
+                df.groupBy("b")
+                        .bindAggregate("c", new Aggregation.Sum())
+                        .bindAggregate("d", new Aggregation.Mean())
+                        .bindAggregate("e", new Aggregation.Count())
+                        .applyColumnSpecificAggregations().toArray());
     }
 }
