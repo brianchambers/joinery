@@ -25,8 +25,6 @@ import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
-
 public class DataFrameAggregationTest {
     DataFrame<Object> df;
 

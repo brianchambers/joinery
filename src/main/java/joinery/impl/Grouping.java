@@ -18,10 +18,7 @@
 
 package joinery.impl;
 
-import java.security.acl.Group;
 import java.util.*;
-import java.util.stream.Collectors;
-
 import joinery.DataFrame;
 import joinery.DataFrame.Aggregate;
 import joinery.DataFrame.Function;
@@ -96,32 +93,35 @@ public class Grouping
             return df;
         }
 
-        if (groups.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "no groups are defined"
-            );
-        }
-
         final List<List<V>> grouped = new ArrayList<>();
         final List<Object> names = new ArrayList<>(df.columns());
         final List<Object> newcols = new ArrayList<>();
         final List<Object> index = new ArrayList<>();
 
-        for (final Object key : aggregateMap.keySet()) {
+        for (final Object key : groups.keySet()) {
             index.add(key);
         }
 
+//        for (final Object key : aggregateMap.keySet()) {
+//            index.add(key);
+//        }
+
         // add key columns
         for (final int c : columns) {
-            final List<V> column = new ArrayList<>();
-            for (final Map.Entry<Object, SparseBitSet> entry : groups.entrySet()) {
-                final SparseBitSet rows = entry.getValue();
-                final int r = rows.nextSetBit(0);
-                column.add(df.get(r, c));
-            }
+            if (!groups.isEmpty()) {
+                final List<V> column = new ArrayList<>();
+                for (final Map.Entry<Object, SparseBitSet> entry : groups.entrySet()) {
+                    final SparseBitSet rows = entry.getValue();
+                    final int r = rows.nextSetBit(0);
+                    column.add(df.get(r, c));
+                }
 
-            grouped.add(column);
-            newcols.add(names.get(c));
+                grouped.add(column);
+                newcols.add(names.get(c));
+            } else {
+                grouped.add(df.col(c));
+                newcols.add(names.get(c));
+            }
         }
 
         // add aggregated data columns
