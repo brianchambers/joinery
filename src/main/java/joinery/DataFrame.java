@@ -62,17 +62,18 @@ import joinery.impl.Views;
  *
  * <pre> {@code
  * > DataFrame.readCsv(String.format(
- * >         "%s?s=%s&a=%d&b=%d&c=%d&d=%d&e=%d&f=%d",
- * >         "http://real-chart.finance.yahoo.com/table.csv",
- * >         "^GSPC",           // symbol for S&P 500
- * >         0, 2, 2008,        // start date
- * >         11, 31, 2008       // end date
+ * >         "%s?q=%s&startdate=%s+%d+%d&enddate=%s+%d+%d&output=csv",
+ * >         "https://finance.google.com/finance/historical",
+ * >         "NASDAQ:GOOG",           // symbol for Alphabet
+ * >         "Jan", 2, 2008,        // start date
+ * >         "Dec", 31, 2008       // end date
  * >     ))
- * >     .retain("Date", "Close")
+ * >     .retain(0, 4)
  * >     .groupBy(new KeyFunction<Object>() {
  * >         public Object apply(List<Object> row) {
- * >             return Date.class.cast(row.get(0)).getMonth();
- * >         }
+ * >                try {
+ * >                    return (new java.text.SimpleDateFormat("dd-MMM-yy").parse(row.get(0).toString())).getMonth();
+ * >                } catch (Exception e) { return null; }}
  * >     })
  * >     .mean()
  * >     .sortBy("Close")
@@ -83,7 +84,7 @@ import joinery.impl.Views;
  * >         }
  * >     })
  * >     .col("Close");
- * [1370, 1378, 1403] }</pre>
+ * [277, 287, 305] }</pre>
  *
  * <p>Taking each step in turn:
  *   <ol>
