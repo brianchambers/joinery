@@ -6,7 +6,7 @@
 
   <groupId>joinery</groupId>
   <artifactId>joinery-dataframe</artifactId>
-  <version>1.9-SNAPSHOT</version>
+  <version>1.9.1</version>
   <packaging>jar</packaging>
 
   <name>Joinery</name>
