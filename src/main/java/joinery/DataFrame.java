@@ -24,18 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.codahale.metrics.annotation.Timed;
 
@@ -73,17 +62,18 @@ import joinery.impl.Views;
  *
  * <pre> {@code
  * > DataFrame.readCsv(String.format(
- * >         "%s?s=%s&a=%d&b=%d&c=%d&d=%d&e=%d&f=%d",
- * >         "http://real-chart.finance.yahoo.com/table.csv",
- * >         "^GSPC",           // symbol for S&P 500
- * >         0, 2, 2008,        // start date
- * >         11, 31, 2008       // end date
+ * >         "%s?q=%s&startdate=%s+%d+%d&enddate=%s+%d+%d&output=csv",
+ * >         "https://finance.google.com/finance/historical",
+ * >         "NASDAQ:GOOG",           // symbol for Alphabet
+ * >         "Jan", 2, 2008,        // start date
+ * >         "Dec", 31, 2008       // end date
  * >     ))
- * >     .retain("Date", "Close")
+ * >     .retain(0, 4)
  * >     .groupBy(new KeyFunction<Object>() {
  * >         public Object apply(List<Object> row) {
- * >             return Date.class.cast(row.get(0)).getMonth();
- * >         }
+ * >                try {
+ * >                    return (new java.text.SimpleDateFormat("dd-MMM-yy").parse(row.get(0).toString())).getMonth();
+ * >                } catch (Exception e) { return null; }}
  * >     })
  * >     .mean()
  * >     .sortBy("Close")
@@ -94,7 +84,7 @@ import joinery.impl.Views;
  * >         }
  * >     })
  * >     .col("Close");
- * [1370, 1378, 1403] }</pre>
+ * [277, 287, 305] }</pre>
  *
  * <p>Taking each step in turn:
  *   <ol>
@@ -1551,6 +1541,18 @@ implements Iterable<List<V>> {
         return groups.apply(this, function);
     }
 
+    public <U> DataFrame<V> bindAggregate(Object column, Aggregate aggregate) {
+        if (columns.names().contains(column)) {
+            groups.bindAggregate(column, aggregate);
+        }
+
+        return this;
+    }
+
+    public <U> DataFrame<V> applyColumnSpecificAggregations() {
+        return groups.apply(this);
+    }
+
     @Timed
     public DataFrame<V> count() {
         return groups.apply(this, new Aggregation.Count<V>());
@@ -2317,5 +2319,12 @@ implements Iterable<List<V>> {
                 DataFrame.class.getCanonicalName()
             );
         System.exit(255);
+    }
+
+    public interface AggregateableColumn {
+        Aggregation aggregation();
+        Object name();
+        void aggregation(Aggregation aggregation);
+        void name(Object name);
     }
 }
