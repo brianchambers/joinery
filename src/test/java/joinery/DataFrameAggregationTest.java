@@ -17,13 +17,16 @@
  */
 
 package joinery;
-
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
-
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import joinery.impl.Aggregation;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 public class DataFrameAggregationTest {
     DataFrame<Object> df;
@@ -32,6 +35,38 @@ public class DataFrameAggregationTest {
     public void setUp()
             throws Exception {
         df = DataFrame.readCsv(ClassLoader.getSystemResourceAsStream("grouping.csv"));
+    }
+
+    @Test
+    public void testSum() {
+        assertArrayEquals(
+                new Double[]{280.0, 280.0},
+                df.sum().toArray()
+        );
+    }
+
+    @Test
+    public void testNullSortingAsc() {
+        DataFrame ndf = ndf();
+        ndf = ndf.sortBy(2);
+        assertNull(ndf.row(0).get(2));
+        assertNotNull(ndf.row(2).get(2));
+    }
+
+    @Test
+    public void testNullSortingDesc() {
+        DataFrame ndf = ndf();
+        ndf = ndf.sortBy(-2);
+        assertEquals(10_000.0d, (double) ndf.row(0).get(2), 0.001);
+        assertNull(ndf.row(6).get(2));
+    }
+
+    private DataFrame ndf() {
+        DataFrame ndf = new DataFrame();
+        ndf.add("a", Arrays.asList("alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf"));
+        ndf.add("b", Arrays.asList("one", "one", "two", "two", "three", "three", "three"));
+        ndf.add("c", Arrays.asList(null, 100.0d, -1000.0d, 10.0d, null, 200.0d, 10_000d));
+        return ndf;
     }
 
     @Test
