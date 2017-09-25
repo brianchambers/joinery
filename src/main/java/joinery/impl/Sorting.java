@@ -40,12 +40,10 @@ public class Sorting {
                     final Comparable<V> v1 = Comparable.class.cast(r1.get(c));
                     final V v2 = r2.get(c);
 
-                    if (v1 == null || v2 == null) {
-                        if (v1 == null && v2 == null) {
+                    if (v1 == null && v2 == null) {
                             result = 0;
-                        } else {
+                    } else if (v1 == null || v2 == null) {
                             result = (v1 == null) ? -1 : 1;
-                        }
                     } else {
                         result = v1.compareTo(v2);
                     }
